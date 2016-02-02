@@ -146,7 +146,7 @@ class LogParser
          @sitecounter.inc(sites, Date.parse(time.to_s).to_s)
          return
      rescue
-         $stderr.puts "malformed line :: "+ linedata
+         $stderr.puts "malformed line :: " + linedata
      end
  end
  

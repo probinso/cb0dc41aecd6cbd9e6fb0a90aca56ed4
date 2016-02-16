@@ -10,16 +10,16 @@ class Session
      @site = []
      @site = @site.push(site)
  end
- 
+
  def add(time, site)
      @time = time
      @site.push(site)
  end
- 
+
  def gettop(n=3)
      return @site[-1*n..-1]
  end
- 
+
  def gettime
      return @time
  end
@@ -27,11 +27,11 @@ end
 
 class User
  def initialize(name, time, site, timeout)
-     @name=name # not nessicary to store user name...
+     @name     = name # not nessicary to store user name...
      @sessions = [Session.new(time, site)]
-     @timeout = timeout # time in seconds
+     @timeout  = timeout # time in seconds
  end
- 
+
  def add(time, site) # sessions exire every 20 hours
      if (((time - @sessions[-1].gettime)/60) < @timeout)
          @sessions[-1].add(time, site)
@@ -49,7 +49,7 @@ class SessionManager
  def initialize
      @users = Hash.new()
  end
- 
+
  def add_and_get_sites(user, time, site, depth)
      if @users.has_key?(user)
          @users[user].add(time, site)
@@ -75,7 +75,7 @@ class SiteCounter
      end
      @sitecount[key] += 1
  end
- 
+
  def to_json
      # puts "entered dump"
      tmp_out = Hash.new()
@@ -86,12 +86,12 @@ class SiteCounter
          end
          tmp_out[date].push({
              :funnel => funnel, 
-             :count => value
+             :count  => value
          })
-         
+
          #puts "#{key}:#{value}"
      end
-     
+
      file_out = []
      tmp_out.sort.reverse.each do |key, value|
          file_out.push({:date => key, :sites => value})
@@ -105,12 +105,12 @@ class LogParser
  def initialize(filename, depth=3, dateformat="%m/%d/%Y %l:%M:%S %p")
      @filename = filename
      @file = self.openFile(@filename)
-     
+
      @depth = depth
-     
+
      @dateformat = dateformat
-     
-     @sitecounter = SiteCounter.new()
+
+     @sitecounter    = SiteCounter.new()
      @sessionmanager = SessionManager.new()
  end
 
@@ -125,20 +125,20 @@ class LogParser
      end
      return File.open(filename)
  end
- 
+
  def parseline(linedata)
      # line is of form Month/Day/Year Hour:Minute:Second Shift\tUsername\tsite
      linedata = linedata.split(/\t/)
      time = Time.strptime(linedata[0], @dateformat)
      user, site = linedata[1], linedata[2]
-     
+
      return time, user, site.rstrip() # rstrip removes whitespace from end
  end
  
  def processline(linedata)
      begin 
          time, user, site = parseline(linedata)
-         
+
          if time == nil or user == nil or site == nil
              throw ArgumentError
          end
@@ -146,7 +146,7 @@ class LogParser
          @sitecounter.inc(sites, Date.parse(time.to_s).to_s)
          return
      rescue
-         $stderr.puts "malformed line :: "+ linedata
+         $stderr.puts "malformed line :: " + linedata
      end
  end
  
@@ -161,9 +161,9 @@ class LogParser
  
  def to_json_file(filename="outfile.json")
      # produces json file in sorted useful order
-     
+
      js = @sitecounter.to_json
-     
+
      File.open(filename, "w") do |file|
           file.write(js)
      end
@@ -175,4 +175,3 @@ begin
  {} while p.step # speed = O(n)
  p.to_json_file  # O(n lg(n))
 end
-

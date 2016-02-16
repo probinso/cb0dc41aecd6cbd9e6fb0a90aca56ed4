@@ -173,6 +173,6 @@ end
 begin 
  p = LogParser.new(filename="in.2")
  {} while p.step # speed = O(n)
- p.to_json_file # O(n lg(n))
+ p.to_json_file  # O(n lg(n))
 end
 

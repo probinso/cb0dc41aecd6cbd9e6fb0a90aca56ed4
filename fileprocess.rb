@@ -27,12 +27,12 @@ end
 
 class User
  def initialize(name, time, site, timeout)
-     @name     = name # not nessicary to store user name...
+     @name     = name    # not nessicary to store user name...
      @sessions = [Session.new(time, site)]
      @timeout  = timeout # time in seconds
  end
 
- def add(time, site) # sessions exire every 20 hours
+ def add(time, site)     # sessions exire every 20 hours
      if (((time - @sessions[-1].gettime)/60) < @timeout)
          @sessions[-1].add(time, site)
      else
